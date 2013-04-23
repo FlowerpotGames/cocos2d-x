@@ -64,7 +64,9 @@ public:
     : m_bSelected(false)
     , m_bEnabled(false)            
     , m_pListener(NULL)            
-    , m_pfnSelector(NULL)
+    , m_pfnPressSelector(NULL)
+    , m_pfnReleaseSelector(NULL)
+    , m_pfnActivatedSelector(NULL)
     , m_nScriptTapHandler(0)
     {}
     virtual ~CCMenuItem();
@@ -72,9 +74,11 @@ public:
     /** Creates a CCMenuItem with no target/selector */
     static CCMenuItem* create();
     /** Creates a CCMenuItem with a target/selector */
-    static CCMenuItem* create(CCObject *rec, SEL_MenuHandler selector);
+    static CCMenuItem* create(CCObject *rec, SEL_MenuHandler activatedSelector);
+    static CCMenuItem* create(CCObject *rec, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     /** Initializes a CCMenuItem with a target/selector */
-    bool initWithTarget(CCObject *rec, SEL_MenuHandler selector);
+    bool initWithTarget(CCObject *rec, SEL_MenuHandler activatedSelector);
+    bool initWithTarget(CCObject *rec, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     /** Returns the outside box */
     CCRect rect();
     /** Activate the item */
@@ -99,10 +103,13 @@ public:
     
     /** set the target/selector of the menu item*/
     void setTarget(CCObject *rec, SEL_MenuHandler selector);
-
+    void setPressTarget(CCObject *rec, SEL_MenuHandler selector);
+    
 protected:
     CCObject*       m_pListener;
-    SEL_MenuHandler    m_pfnSelector;
+    SEL_MenuHandler    m_pfnPressSelector;
+    SEL_MenuHandler    m_pfnReleaseSelector;
+    SEL_MenuHandler    m_pfnActivatedSelector;
     int             m_nScriptTapHandler;
 };
 
@@ -128,11 +135,13 @@ public:
 
     /** creates a CCMenuItemLabel with a Label, target and selector */
     static CCMenuItemLabel * create(CCNode*label, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemLabel * create(CCNode*label, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     /** creates a CCMenuItemLabel with a Label. Target and selector will be nil */
     static CCMenuItemLabel* create(CCNode *label);
 
     /** initializes a CCMenuItemLabel with a Label, target and selector */
     bool initWithLabel(CCNode* label, CCObject* target, SEL_MenuHandler selector);
+    bool initWithLabel(CCNode* label, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler selector);
     /** sets a new string to the inner label */
     void setString(const char * label);
     // super methods
@@ -162,9 +171,11 @@ public:
     /** creates a menu item from a string and atlas with a target/selector */
     static CCMenuItemAtlasFont* create(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap);
     /** creates a menu item from a string and atlas. Use it with MenuItemToggle */
-    static CCMenuItemAtlasFont* create(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemAtlasFont* create(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap, CCObject* target, SEL_MenuHandler activatedSelector);
+    static CCMenuItemAtlasFont* create(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     /** initializes a menu item from a string and atlas with a target/selector */
-    bool initWithString(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap, CCObject* target, SEL_MenuHandler selector);
+    bool initWithString(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap, CCObject* target, SEL_MenuHandler activatedSelector);
+    bool initWithString(const char *value, const char *charMapFile, int itemWidth, int itemHeight, char startCharMap, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
 };
 
 
@@ -188,10 +199,12 @@ public:
     /** creates a menu item from a string without target/selector. To be used with CCMenuItemToggle */
     static CCMenuItemFont * create(const char *value);
     /** creates a menu item from a string with a target/selector */
-    static CCMenuItemFont * create(const char *value, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemFont * create(const char *value, CCObject* target, SEL_MenuHandler activatedSelector);
+    static CCMenuItemFont * create(const char *value, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
 
     /** initializes a menu item from a string with a target/selector */
-    bool initWithString(const char *value, CCObject* target, SEL_MenuHandler selector);
+    bool initWithString(const char *value, CCObject* target, SEL_MenuHandler activatedSelector);
+    bool initWithString(const char *value, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     
     /** set font size
      * c++ can not overload static and non-static member functions with the same parameter types
@@ -244,12 +257,21 @@ public:
     /** creates a menu item with a normal, selected and disabled image*/
     static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite = NULL);
     /** creates a menu item with a normal and selected image with target/selector */
-    static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCObject* target, SEL_MenuHandler activatedSelector);
     /** creates a menu item with a normal,selected  and disabled image with target/selector */
-    static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler activatedSelector);
+    /** creates a menu item with a normal and selected image with press/release selector */
+    static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
+    /** creates a menu item with a normal,selected  and disabled image with press/release tselector */
+    static CCMenuItemSprite * create(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
 
     /** initializes a menu item with a normal, selected  and disabled image with target/selector */
-    bool initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler selector);
+    bool initWithNormalSprite(CCNode* normalSprite, CCNode* selectedSprite, CCNode* disabledSprite, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
+    // super methods
+    virtual void setColor(const ccColor3B& color);
+    virtual const ccColor3B& getColor();
+    virtual void setOpacity(GLubyte opacity);
+    virtual GLubyte getOpacity();
     
     /**
      @since v0.99.5
@@ -284,13 +306,16 @@ public:
     /** creates a menu item with a normal,selected  and disabled image*/
     static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, const char *disabledImage);
     /** creates a menu item with a normal and selected image with target/selector */
-    static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, CCObject* target, SEL_MenuHandler activatedSelector);
+    static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     /** creates a menu item with a normal,selected  and disabled image with target/selector */
-    static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, const char *disabledImage, CCObject* target, SEL_MenuHandler selector);
+    static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, const char *disabledImage, CCObject* target, SEL_MenuHandler activatedSelector);
+    static CCMenuItemImage* create(const char *normalImage, const char *selectedImage, const char *disabledImage, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     
     bool init();
     /** initializes a menu item with a normal, selected  and disabled image with target/selector */
-    bool initWithNormalImage(const char *normalImage, const char *selectedImage, const char *disabledImage, CCObject* target, SEL_MenuHandler selector);
+    bool initWithNormalImage(const char *normalImage, const char *selectedImage, const char *disabledImage, CCObject* target, SEL_MenuHandler activatedSelector);
+    bool initWithNormalImage(const char *normalImage, const char *selectedImage, const char *disabledImage, CCObject* target, SEL_MenuHandler pressSelector, SEL_MenuHandler releaseSelector, SEL_MenuHandler activatedSelector);
     /** sets the sprite frame for the normal image */
     void setNormalSpriteFrame(CCSpriteFrame* frame);
     /** sets the sprite frame for the selected image */
