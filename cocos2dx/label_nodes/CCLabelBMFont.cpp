@@ -622,6 +622,16 @@ void CCLabelBMFont::createFontChars()
         if (charSet->find(c) == charSet->end())
         {
             CCLOGWARN("cocos2d::CCLabelBMFont: Attempted to use character not defined in this bitmap: %d", c);
+            
+            // remove this character from the string
+            for(int count = i; count < stringLen; count++)
+            {
+                if (count > i)
+                {
+                    m_sString[count - 1] = m_sString[count];
+                }
+            }
+            
             continue;      
         }
 
